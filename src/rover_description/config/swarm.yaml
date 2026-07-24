@@ -1,0 +1,100 @@
+# Central swarm configuration.
+# Every top-level key is a NODE NAME; ROS 2 params must live under `ros__parameters:`.
+# Documentation-only sections belong in comments, not YAML keys.
+#
+# ─── Reference values (comments only — do not add as YAML keys) ──────────
+#   MOTION limits — must match URDF + rover_teleop.py:
+#     max_linear_velocity      = 1.0 m/s
+#     max_linear_acceleration  = 1.0 m/s²
+#     max_angular_velocity     = 1.0 rad/s
+#     max_angular_acceleration = 2.0 rad/s²
+# ─── Sensor rates reference (comments only) ──────────────────────────────
+#   lidar_rate    = 5.0 Hz          Livox Mid-360 typical
+#   camera_rate   = 15.0 Hz
+#   imu_rate      = 100.0 Hz
+#   sonar_rate    = 10.0 Hz
+
+# Apply use_sim_time to EVERY node loaded with this file.
+/**:
+  ros__parameters:
+    use_sim_time: true
+
+# ─── Fleet layout ─────────────────────────────────────────────────────────
+# THE swarm knob. simulation.launch.py reads this block at launch time:
+#   - num_rovers rovers spawn, namespaced <namespace_prefix><i> starting at
+#     first_index (rover_0, rover_1, ... by default).
+#   - Topics, TF frames, teleop slots, dock/battery/diagnostics rosters, and
+#     the generated RViz config all scale off the same list automatically.
+#   - Spawn poses: explicit per-rover entries in spawn_poses win; any rover
+#     without one falls back to the line layout (spawn_x, spawn_y_start +
+#     i * spawn_y_spacing, spawn_z, spawn_yaw).
+# Launch args still override: num_rovers:=N, full_sensors_all:=true/false.
+# This block is read by the launch file only — no node consumes it — but it
+# keeps the ros__parameters shape so the file stays a valid ROS params file.
+fleet:
+  ros__parameters:
+    num_rovers: 3                # 1–10
+    namespace_prefix: "rover_"   # topic/TF prefix → /rover_0/lidar, rover_0/base_link
+    first_index: 0               # set 1 for /rover_1../rover_N numbering
+    full_sensors_all: true       # true: every rover gets lidar+camera+6 sonars
+                                 # false: only the first rover is full "scout";
+                                 # the rest run lite (IMU + front sonar + camera)
+                                 # — use on weak machines at high N
+    # Line-layout defaults (used for any rover not listed in spawn_poses):
+    spawn_x: 0.0
+    spawn_y_start: 0.0
+    spawn_y_spacing: 0.8         # metres between rovers along Y
+    spawn_z: 0.15
+    spawn_yaw: 0.0               # radians
+    # Explicit per-rover poses [x, y, z, yaw]. Any rover listed here uses its
+    # entry; the rest follow the line layout above. NOTE: mixing explicit and
+    # line-layout poses gives uneven spacing between the two sets. For a
+    # clean-looking formation either list ALL rovers or list NONE.
+    # Lane centers in crop_field.sdf are Y = -2.4, 0.0, +2.4.
+    # Enabled for the Swarm-SLAM demo: the line-layout default (y=0,0.8,1.6)
+    # aims rover_1 straight at box_near_left and parks rover_2 against a
+    # corn row -- collisions wreck wheel odometry and block the drives.
+    spawn_poses:
+      rover_0: [0.0, -2.4, 0.15, 0.0]
+      rover_1: [0.0,  0.0, 0.15, 0.0]
+      rover_2: [0.0,  2.4, 0.15, 0.0]
+
+# ─── Docking station ─────────────────────────────────────────────────────
+dock_monitor_0:
+  ros__parameters:
+    dock_id: 0
+    dock_x: -2.0
+    dock_y: 0.0
+    dock_yaw: 0.0
+    contact_offset: 0.15          # m behind dock origin along -x (back plate)
+    charging_radius: 0.10         # m — CHARGING when within this
+    charging_heading_tol: 0.35    # rad — ~20°
+    docking_radius: 0.30
+    docking_heading_tol: 0.60
+    approach_radius: 1.0
+
+# Battery model. The /** prefix matches battery_publisher at ANY namespace depth
+# (nodes launched as /rover_0/battery_publisher, /rover_1/battery_publisher, etc.).
+# Without the wildcard, bare "battery_publisher:" only matches /battery_publisher.
+/**/battery_publisher:
+  ros__parameters:
+    capacity_wh: 100.0
+    nominal_voltage: 24.0
+    drive_current: 3.0
+    idle_current: 0.5
+    charge_current: 10.0
+    publish_rate: 1.0
+    initial_percentage: 0.85
+
+# ─── E-stop ──────────────────────────────────────────────────────────────
+estop_manager:
+  ros__parameters:
+    stop_topic: /emergency_stop
+
+# ─── Teleop (reserved for future YAML-driven tuning) ─────────────────────
+# rover_teleop currently reads constants at import time; block kept so params
+# framework is wired if we move motion tuning here later.
+fleet_teleop:
+  ros__parameters:
+    speed_init: 0.8
+    turn_init: 0.8

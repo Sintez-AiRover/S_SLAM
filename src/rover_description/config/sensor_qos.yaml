@@ -1,0 +1,44 @@
+# Sensor-topic QoS overrides. Real sensor drivers publish BEST_EFFORT + KEEP_LAST(5)
+# so consumers can drop stale frames instead of buffering. Reliable QoS on sensor
+# data creates latency spikes under load and causes silent mismatches with any
+# consumer using BEST_EFFORT (Nav2, SLAM Toolbox, Cartographer, FAST-LIO2 all do).
+#
+# Applied via `parameters=[sensor_qos.yaml]` on ros_gz_bridge parameter_bridge nodes
+# and any pure-ROS sensor republisher (livox_publisher, sonar_to_range).
+
+/**:
+  ros__parameters:
+    qos_overrides:
+      /rover_0/lidar/points:
+        publisher:
+          reliability: best_effort
+          history: keep_last
+          depth: 5
+      /rover_0/livox/lidar:
+        publisher:
+          reliability: best_effort
+          history: keep_last
+          depth: 5
+      /rover_0/camera/image:
+        publisher:
+          reliability: best_effort
+          history: keep_last
+          depth: 5
+      /rover_0/imu:
+        publisher:
+          reliability: best_effort
+          history: keep_last
+          depth: 5
+      # Sonar range topics — one per direction, six total per rover
+      /rover_0/sonar/front/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}
+      /rover_0/sonar/rear/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}
+      /rover_0/sonar/left/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}
+      /rover_0/sonar/right/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}
+      /rover_0/sonar/front_left/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}
+      /rover_0/sonar/front_right/range:
+        publisher: {reliability: best_effort, history: keep_last, depth: 5}

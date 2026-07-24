@@ -1,0 +1,589 @@
+<?xml version="1.0"?>
+<robot name="ai_rover">
+
+  <!-- ═══════════════════════════════════════════════════
+       MATERIALS
+  ═══════════════════════════════════════════════════ -->
+  <material name="silver">
+    <color rgba="0.75 0.75 0.78 1.0"/>
+  </material>
+  <material name="tire_black">
+    <color rgba="0.15 0.15 0.15 1.0"/>
+  </material>
+  <material name="lidar_blue">
+    <color rgba="0.1 0.4 0.9 1.0"/>
+  </material>
+  <material name="camera_dark">
+    <color rgba="0.25 0.25 0.28 1.0"/>
+  </material>
+  <material name="sonar_green">
+    <color rgba="0.1 0.85 0.25 1.0"/>
+  </material>
+  <material name="sonar_orange">
+    <color rgba="1.0 0.55 0.05 1.0"/>
+  </material>
+
+  <!-- ═══════════════════════════════════════════════════
+       BASE LINK
+       Visual origin empirically corrected in RViz
+  ═══════════════════════════════════════════════════ -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="-0.02 0 0" rpy="1.5708 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://rover_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.78 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.234 0.207 0.158"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <!-- Origin lowered from 0.08 to 0.05 to drop centre of gravity below wheel
+           axis height, killing the nose-up / tail-up pitch on accel & brake.
+           Mass raised from 1.2 → 5.0 kg — real small ag scout rovers weigh
+           5-10 kg; the previous 1.2 kg was toy-drone light and let wheel torque
+           tip the chassis. Inertia rescaled for the box 0.234 × 0.207 × 0.158
+           at the new mass. -->
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <mass value="5.0"/>
+      <inertia ixx="0.028" ixy="0.0" ixz="0.0"
+               iyy="0.033" iyz="0.0"
+               izz="0.041"/>
+    </inertial>
+  </link>
+
+  <!-- ═══════════════════════════════════════════════════
+       WHEEL — FRONT RIGHT
+       Visual empirically corrected. Joint origin matches visual.
+  ═══════════════════════════════════════════════════ -->
+  <link name="wheel_fr_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://rover_description/meshes/wheel_fr.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="tire_black">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.04045" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="wheel_fr_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fr_link"/>
+    <origin xyz="0.065092 -0.064920 -0.0202" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       WHEEL — FRONT LEFT
+       Interpolated from wheel_fr — Y mirrored, rpy flipped
+  ═══════════════════════════════════════════════════ -->
+  <link name="wheel_fl_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://rover_description/meshes/wheel_fl.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="tire_black">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.04045" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="wheel_fl_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fl_link"/>
+    <origin xyz="0.064906 0.065000 -0.0202" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       WHEEL — BACK RIGHT
+       Interpolated from wheel_fr — X shifted by wheelbase (~98mm)
+  ═══════════════════════════════════════════════════ -->
+  <link name="wheel_br_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://rover_description/meshes/wheel_br.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="tire_black">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.04045" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="wheel_br_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_br_link"/>
+    <origin xyz="-0.031906 -0.064900 -0.0202" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       WHEEL — BACK LEFT
+       Interpolated from wheel_fr — X shifted + Y mirrored
+  ═══════════════════════════════════════════════════ -->
+  <link name="wheel_bl_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://rover_description/meshes/wheel_bl.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="tire_black">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.04045" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="wheel_bl_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_bl_link"/>
+    <origin xyz="-0.032092 0.065011 -0.0202" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       LIDAR LINK — Livox Mid-360
+       Visual empirically corrected in RViz
+  ═══════════════════════════════════════════════════ -->
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0.01 0.0165 0.04" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.0325" length="0.045"/>
+      </geometry>
+      <material name="lidar_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.0325" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.265"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="-0.0298 -0.008 0.1131" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       CAMERA LINK — LeTMC-520 Stereo Camera
+       Primitive box — visual sits at joint center
+  ═══════════════════════════════════════════════════ -->
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.030 0.100 0.030"/>
+      </geometry>
+      <material name="camera_dark"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.030 0.100 0.030"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0"
+               iyy="0.00001" iyz="0.0"
+               izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.1135 -0.0022 0.0597" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Camera optical frame -->
+  <link name="camera_optical_link"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_link"/>
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       PROXIMITY SENSORS x6
+       All primitives — visual at joint center
+       Yaw angles set per face direction
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- SONAR FRONT CENTER -->
+  <link name="sonar_front_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_green"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_front_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_front_link"/>
+    <origin xyz="0.125 0.0022 0.0344" rpy="0 0 0"/>
+  </joint>
+
+  <!-- SONAR FRONT-RIGHT 45° -->
+  <link name="sonar_front_right_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_green"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_front_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_front_right_link"/>
+    <origin xyz="0.11 -0.084 0.0344" rpy="0 0 -0.7854"/>
+  </joint>
+
+  <!-- SONAR FRONT-LEFT 45° -->
+  <link name="sonar_front_left_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_green"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_front_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_front_left_link"/>
+    <origin xyz="0.111 0.086 0.0344" rpy="0 0 0.7854"/>
+  </joint>
+
+  <!-- SONAR REAR CENTER -->
+  <link name="sonar_rear_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 3.1416"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_orange"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_rear_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_rear_link"/>
+    <origin xyz="-0.1190 0.004 0.0344" rpy="0 0 3.1416"/>
+  </joint>
+
+  <!-- SONAR REAR-RIGHT 45° -->
+  <link name="sonar_rear_right_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_orange"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_rear_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_rear_right_link"/>
+    <origin xyz="-0.095 -0.085 0.0344" rpy="0 0 -2.3562"/>
+  </joint>
+
+  <!-- SONAR REAR-LEFT 45° -->
+  <link name="sonar_rear_left_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.04 0.02"/></geometry>
+      <material name="sonar_orange"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sonar_rear_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_rear_left_link"/>
+    <origin xyz="-0.095 0.092 0.0344" rpy="0 0 2.3562"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════
+       GAZEBO MATERIALS — colors visible in Gazebo Fortress
+  ═══════════════════════════════════════════════════ -->
+  <gazebo reference="base_link">
+    <visual><material><ambient>0.75 0.75 0.78 1</ambient><diffuse>0.75 0.75 0.78 1</diffuse><specular>0.2 0.2 0.2 1</specular></material></visual>
+  </gazebo>
+  <!-- Per-wheel friction + contact softness. mu1 (roll dir) < mu2 (lateral) prevents stick-slip judder;
+       kp/kd soften ground contact so light 1.2 kg chassis doesn't chatter on micro-bumps. -->
+  <gazebo reference="wheel_fr_link"><mu1>0.8</mu1><mu2>0.5</mu2><kp>1000000.0</kp><kd>100.0</kd><minDepth>0.001</minDepth><maxVel>0.1</maxVel><visual><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual></gazebo>
+  <gazebo reference="wheel_fl_link"><mu1>0.8</mu1><mu2>0.5</mu2><kp>1000000.0</kp><kd>100.0</kd><minDepth>0.001</minDepth><maxVel>0.1</maxVel><visual><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual></gazebo>
+  <gazebo reference="wheel_br_link"><mu1>0.8</mu1><mu2>0.5</mu2><kp>1000000.0</kp><kd>100.0</kd><minDepth>0.001</minDepth><maxVel>0.1</maxVel><visual><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual></gazebo>
+  <gazebo reference="wheel_bl_link"><mu1>0.8</mu1><mu2>0.5</mu2><kp>1000000.0</kp><kd>100.0</kd><minDepth>0.001</minDepth><maxVel>0.1</maxVel><visual><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual></gazebo>
+  <gazebo reference="lidar_link"><visual><material><ambient>0.1 0.4 0.9 1</ambient><diffuse>0.1 0.4 0.9 1</diffuse></material></visual></gazebo>
+  <gazebo reference="camera_link"><visual><material><ambient>0.25 0.25 0.28 1</ambient><diffuse>0.25 0.25 0.28 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_front_link"><visual><material><ambient>0.1 0.85 0.25 1</ambient><diffuse>0.1 0.85 0.25 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_front_right_link"><visual><material><ambient>0.1 0.85 0.25 1</ambient><diffuse>0.1 0.85 0.25 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_front_left_link"><visual><material><ambient>0.1 0.85 0.25 1</ambient><diffuse>0.1 0.85 0.25 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_rear_link"><visual><material><ambient>1.0 0.55 0.05 1</ambient><diffuse>1.0 0.55 0.05 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_rear_right_link"><visual><material><ambient>1.0 0.55 0.05 1</ambient><diffuse>1.0 0.55 0.05 1</diffuse></material></visual></gazebo>
+  <gazebo reference="sonar_rear_left_link"><visual><material><ambient>1.0 0.55 0.05 1</ambient><diffuse>1.0 0.55 0.05 1</diffuse></material></visual></gazebo>
+
+  <!-- ═══════════════════════════════════════════════════
+       GAZEBO SENSORS — publish data on Ignition topics
+       Bridged to ROS2 via ros_gz_bridge (see launch file)
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- __LITE_STRIP_START__
+       Everything between this marker and the matching __LITE_STRIP_END__ marker is
+       removed by the launch file for "lite" rovers. Scouts keep the full sensor set;
+       followers keep only IMU + front sonar so the sim scales to N=10.
+       Do NOT edit these markers — they are load-bearing for launch/simulation.launch.py. -->
+
+  <!-- LiDAR (Livox Mid-360 — simulated as gpu_lidar)
+       update_rate dropped 10→5 Hz to reduce render load (see README optimizations) -->
+  <gazebo reference="lidar_link">
+    <sensor name="lidar" type="gpu_lidar">
+      <topic>__NS__/lidar</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan>
+          <horizontal><samples>360</samples><resolution>1</resolution><min_angle>-3.14159</min_angle><max_angle>3.14159</max_angle></horizontal>
+          <vertical><samples>16</samples><resolution>1</resolution><min_angle>-0.5236</min_angle><max_angle>0.5236</max_angle></vertical>
+        </scan>
+        <range><min>0.1</min><max>40.0</max><resolution>0.02</resolution></range>
+      </lidar>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <!-- __LITE_STRIP_END__ -->
+
+  <!-- RGB Camera (LeTMC-520). Kept for EVERY rover (scout + lite) so multi-rover
+       demos still show camera feeds on all robots. Resolution 320×240 @ 10 Hz —
+       downgraded from 640×480 @ 15 Hz because 3 rovers × the higher settings
+       pushed real-time factor below 1.0 and made physics stepping jerky.
+       Bump these back up per-project if you have a beefier machine. -->
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="camera">
+      <topic>__NS__/camera/image</topic>
+      <update_rate>10</update_rate>
+      <camera>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image><width>320</width><height>240</height><format>R8G8B8</format></image>
+        <clip><near>0.05</near><far>50.0</far></clip>
+      </camera>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+
+    <!-- Thermal camera removed 2026-07-02. Not required for this task and
+         Fortress ThermalCameraSensor is unstable when configured near other
+         cameras. Re-add here if downstream ever needs a thermal channel. -->
+  </gazebo>
+
+  <!-- IMU on base_link. Noise blocks removed — added CPU load caused jerky physics
+       stepping when combined with sonar + lidar noise. Dev 2 / Dev 3 can re-add
+       per-axis noise (MPU-9250 / BMI088 class) once they need realistic drift
+       for SLAM tuning. Reference values: gyro σ=0.001 rad/s bias 0.0001 rad/s²,
+       accel σ=0.01 m/s² bias 0.001 m/s³. -->
+  <gazebo reference="base_link">
+    <sensor name="imu" type="imu">
+      <topic>__NS__/imu</topic>
+      <update_rate>100</update_rate>
+      <always_on>1</always_on>
+    </sensor>
+  </gazebo>
+
+  <!-- ═══════════════════════════════════════════════════
+       SONARS — 6× single-beam gpu_ray (ultrasonic proximity)
+       Each publishes ignition.msgs.LaserScan on its own topic;
+       bridged to ROS as sensor_msgs/msg/LaserScan.
+       Beam = 25° cone (5 samples × 5°) to mimic real HC-SR04 spread.
+  ═══════════════════════════════════════════════════ -->
+  <gazebo reference="sonar_front_link">
+    <sensor name="sonar_front" type="gpu_lidar">
+      <topic>__NS__/sonar/front</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan>
+          <horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal>
+          <vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical>
+        </scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo>
+
+  <!-- __LITE_STRIP_START__
+       Sonars 2 through 6 (front_right, front_left, rear, rear_right, rear_left)
+       are stripped from follower ("lite") rovers by launch/simulation.launch.py.
+       Scouts keep the full six; followers keep only sonar_front above. -->
+  <gazebo reference="sonar_front_right_link">
+    <sensor name="sonar_front_right" type="gpu_lidar">
+      <topic>__NS__/sonar/front_right</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan><horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal><vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical></scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on><visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <gazebo reference="sonar_front_left_link">
+    <sensor name="sonar_front_left" type="gpu_lidar">
+      <topic>__NS__/sonar/front_left</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan><horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal><vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical></scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on><visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <gazebo reference="sonar_rear_link">
+    <sensor name="sonar_rear" type="gpu_lidar">
+      <topic>__NS__/sonar/rear</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan><horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal><vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical></scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on><visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <gazebo reference="sonar_rear_right_link">
+    <sensor name="sonar_rear_right" type="gpu_lidar">
+      <topic>__NS__/sonar/rear_right</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan><horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal><vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical></scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on><visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <gazebo reference="sonar_rear_left_link">
+    <sensor name="sonar_rear_left" type="gpu_lidar">
+      <topic>__NS__/sonar/rear_left</topic>
+      <update_rate>5</update_rate>
+      <lidar>
+        <scan><horizontal><samples>32</samples><resolution>1</resolution><min_angle>-0.2182</min_angle><max_angle>0.2182</max_angle></horizontal><vertical><samples>3</samples><resolution>1</resolution><min_angle>-0.002</min_angle><max_angle>0.002</max_angle></vertical></scan>
+        <range><min>0.02</min><max>2.0</max><resolution>0.01</resolution></range>
+      </lidar>
+      <always_on>1</always_on><visualize>true</visualize>
+    </sensor>
+  </gazebo>
+  <!-- __LITE_STRIP_END__ -->
+
+  <!-- Model plugins: joint_state_publisher + skid-steer DiffDrive per-rover.
+       Sensors plugin is world-level (see crop_field.sdf) — must NOT be here or
+       it multiplies with each spawned rover and breaks the render pipeline. -->
+  <gazebo>
+    <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher">
+      <topic>__NS__/joint_states</topic>
+    </plugin>
+
+    <!-- Skid-steer DiffDrive: pair FL+BL on left, FR+BR on right.
+         EDIT THESE FOUR LIMITS to change rover speed/acceleration.
+         !!! If you edit accel here, EDIT rover_teleop.py LIN_ACCEL/ANG_ACCEL to match.
+             Mismatch causes double-filtering = constant jerk during accel/decel. -->
+    <plugin filename="ignition-gazebo-diff-drive-system" name="ignition::gazebo::systems::DiffDrive">
+      <left_joint>wheel_fl_joint</left_joint>
+      <left_joint>wheel_bl_joint</left_joint>
+      <right_joint>wheel_fr_joint</right_joint>
+      <right_joint>wheel_br_joint</right_joint>
+      <wheel_separation>0.13</wheel_separation>
+      <wheel_radius>0.04045</wheel_radius>
+      <max_linear_velocity>1.0</max_linear_velocity>
+      <max_linear_acceleration>1.0</max_linear_acceleration>
+      <max_angular_velocity>1.0</max_angular_velocity>
+      <max_angular_acceleration>1.0</max_angular_acceleration>
+      <topic>__NS__/cmd_vel</topic>
+      <odom_topic>__NS__/odom</odom_topic>
+      <tf_topic>/tf</tf_topic>
+      <frame_id>__NS__/odom</frame_id>
+      <child_frame_id>__NS__/base_link</child_frame_id>
+      <odom_publish_frequency>30</odom_publish_frequency>
+    </plugin>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,43 @@
+robot0: ATE joint 0.10m (max 0.21) | solo 0.10m (max 0.21) | 28 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 0.10m (max 0.21) | solo 0.10m (max 0.21) | 28 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 0.10m (max 0.21) | solo 0.10m (max 0.21) | 28 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 0.10m (max 0.21) | solo 0.10m (max 0.21) | 28 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.47m (max 1.74) | solo 0.46m (max 1.08) | 68 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.47m (max 1.74) | solo 0.46m (max 1.08) | 68 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.47m (max 1.74) | solo 0.46m (max 1.08) | 68 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.61m (max 2.74) | solo 1.13m (max 1.81) | 163 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.56m (max 3.39) | solo 1.11m (max 2.26) | 289 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.61m (max 3.46) | solo 1.14m (max 2.30) | 301 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.88m (max 4.03) | solo 1.25m (max 2.46) | 389 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 1.97m (max 4.05) | solo 1.73m (max 2.54) | 528 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 2.07m (max 4.00) | solo 1.89m (max 2.88) | 662 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 2.15m (max 3.76) | solo 2.02m (max 3.26) | 800 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 2.64m (max 4.07) | solo 2.54m (max 3.95) | 932 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 2.85m (max 4.47) | solo 2.75m (max 4.14) | 1066 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 3.05m (max 4.86) | solo 2.90m (max 4.48) | 1199 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 3.24m (max 5.30) | solo 3.03m (max 4.98) | 1331 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 3.25m (max 5.34) | solo 3.04m (max 5.05) | 1344 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 3.59m (max 7.95) | solo 3.36m (max 7.24) | 1411 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 4.03m (max 8.30) | solo 3.67m (max 6.87) | 1496 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 4.03m (max 8.30) | solo 3.67m (max 6.87) | 1496 kf || not merged yet (no eval): robot 1,2
+robot0: ATE joint 10.98m (max 16.32) | solo 3.71m (max 6.82) | 1520 kf || robot1: ATE joint 5.84m (max 14.09) | solo 4.42m (max 11.05) | 2739 kf || robot2: ATE joint 11.47m (max 22.36) | solo 1.73m (max 3.25) | 1980 kf
+robot0: ATE joint 10.94m (max 16.80) | solo 4.15m (max 7.43) | 1673 kf || robot1: ATE joint 6.70m (max 15.14) | solo 5.21m (max 10.69) | 2939 kf || robot2: ATE joint 10.70m (max 21.00) | solo 1.79m (max 3.46) | 2127 kf
+robot0: ATE joint 10.94m (max 16.80) | solo 4.15m (max 7.43) | 1673 kf || robot1: ATE joint 6.70m (max 15.14) | solo 5.21m (max 10.69) | 2939 kf || robot2: ATE joint 10.70m (max 21.00) | solo 1.79m (max 3.46) | 2127 kf
+robot0: ATE joint 11.59m (max 18.00) | solo 4.74m (max 8.61) | 1826 kf || robot1: ATE joint 10.22m (max 32.49) | solo 8.45m (max 25.93) | 3128 kf || robot2: ATE joint 11.28m (max 21.62) | solo 1.83m (max 3.45) | 2285 kf
+robot0: ATE joint 11.25m (max 18.13) | solo 5.01m (max 9.35) | 1972 kf || robot1: ATE joint 10.22m (max 32.47) | solo 8.45m (max 25.93) | 3128 kf || robot2: ATE joint 10.83m (max 21.52) | solo 1.51m (max 3.32) | 2438 kf
+robot0: ATE joint 11.95m (max 18.94) | solo 5.01m (max 9.35) | 1972 kf || robot1: ATE joint 12.71m (max 34.84) | solo 10.67m (max 26.85) | 3322 kf || robot2: ATE joint 10.90m (max 21.54) | solo 1.51m (max 3.32) | 2438 kf
+robot0: ATE joint 12.32m (max 19.77) | solo 5.20m (max 9.94) | 2110 kf || robot1: ATE joint 14.25m (max 35.61) | solo 11.99m (max 27.28) | 3478 kf || robot2: ATE joint 11.23m (max 21.31) | solo 1.45m (max 3.38) | 2582 kf
+robot0: ATE joint 12.32m (max 19.77) | solo 5.20m (max 9.94) | 2110 kf || robot1: ATE joint 14.25m (max 35.61) | solo 11.99m (max 27.28) | 3478 kf || robot2: ATE joint 11.23m (max 21.31) | solo 1.45m (max 3.38) | 2582 kf
+robot0: ATE joint 12.83m (max 20.92) | solo 5.23m (max 10.32) | 2278 kf || robot1: ATE joint 15.46m (max 36.18) | solo 13.01m (max 27.30) | 3677 kf || robot2: ATE joint 11.93m (max 21.63) | solo 2.50m (max 4.16) | 2751 kf
+robot0: ATE joint 12.83m (max 20.92) | solo 5.23m (max 10.32) | 2278 kf || robot1: ATE joint 15.46m (max 36.18) | solo 13.01m (max 27.30) | 3677 kf || robot2: ATE joint 11.93m (max 21.63) | solo 2.50m (max 4.16) | 2751 kf
+robot0: ATE joint 13.15m (max 21.88) | solo 5.27m (max 10.67) | 2465 kf || robot1: ATE joint 17.19m (max 38.96) | solo 14.40m (max 30.02) | 3863 kf || robot2: ATE joint 13.00m (max 23.88) | solo 2.58m (max 4.64) | 2931 kf
+robot0: ATE joint 13.15m (max 21.88) | solo 5.27m (max 10.67) | 2465 kf || robot1: ATE joint 17.19m (max 38.96) | solo 14.40m (max 30.02) | 3863 kf || robot2: ATE joint 13.00m (max 23.88) | solo 2.58m (max 4.64) | 2931 kf
+robot0: ATE joint 13.47m (max 22.64) | solo 5.35m (max 11.02) | 2647 kf || robot1: ATE joint 18.56m (max 38.15) | solo 15.54m (max 29.59) | 4072 kf || robot2: ATE joint 14.03m (max 24.85) | solo 2.60m (max 4.80) | 3144 kf
+robot0: ATE joint 13.47m (max 22.64) | solo 5.35m (max 11.02) | 2647 kf || robot1: ATE joint 18.56m (max 38.15) | solo 15.54m (max 29.59) | 4072 kf || robot2: ATE joint 14.03m (max 24.85) | solo 2.60m (max 4.80) | 3144 kf
+robot0: ATE joint 14.02m (max 23.30) | solo 5.35m (max 11.02) | 2647 kf || robot1: ATE joint 19.59m (max 37.53) | solo 16.41m (max 29.40) | 4265 kf || robot2: ATE joint 14.49m (max 24.57) | solo 2.55m (max 4.88) | 3334 kf
+robot0: ATE joint 14.02m (max 23.30) | solo 5.35m (max 11.02) | 2647 kf || robot1: ATE joint 19.59m (max 37.53) | solo 16.41m (max 29.40) | 4265 kf || robot2: ATE joint 14.49m (max 24.57) | solo 2.55m (max 4.88) | 3334 kf
+robot0: ATE joint 14.44m (max 23.86) | solo 5.35m (max 11.01) | 2647 kf || robot1: ATE joint 20.28m (max 36.58) | solo 17.22m (max 28.82) | 4499 kf || robot2: ATE joint 14.05m (max 22.59) | solo 2.38m (max 4.18) | 3371 kf
+robot0: ATE joint 12.69m (max 21.19) | solo 5.34m (max 11.06) | 2647 kf || robot1: ATE joint 11.53m (max 24.64) | solo 8.36m (max 15.62) | 4690 kf || robot2: ATE joint 11.69m (max 20.12) | solo 2.30m (max 4.11) | 3371 kf
+robot0: ATE joint 12.69m (max 21.19) | solo 5.34m (max 11.06) | 2647 kf || robot1: ATE joint 11.53m (max 24.64) | solo 8.36m (max 15.62) | 4690 kf || robot2: ATE joint 11.69m (max 20.12) | solo 2.30m (max 4.11) | 3371 kf
+robot0: ATE joint 12.66m (max 21.16) | solo 5.34m (max 11.06) | 2647 kf || robot1: ATE joint 11.18m (max 24.43) | solo 8.22m (max 15.71) | 4910 kf || robot2: ATE joint 11.76m (max 20.24) | solo 2.30m (max 4.11) | 3371 kf
+robot0: ATE joint 12.57m (max 21.00) | solo 5.34m (max 11.06) | 2647 kf || robot1: ATE joint 11.40m (max 24.72) | solo 8.69m (max 17.45) | 5148 kf || robot2: ATE joint 11.76m (max 20.30) | solo 2.30m (max 4.11) | 3371 kf

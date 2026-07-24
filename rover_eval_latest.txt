@@ -1,0 +1,20 @@
+
+2026-07-23 15:56:09
+=== rover Swarm-SLAM evaluation vs Ignition ground truth ===
+merge groups (origin -> robots): {0: [0, 2], 1: [1]}
+merged robots: [0, 2]
+
+--- solo ATE (own drift only) ---
+  r0:  0.779 m   (811 samples)
+  r1:  0.108 m   (810 samples)
+  r2:  3.738 m   (810 samples)
+
+--- joint ATE (one shared alignment; includes merge error) ---
+  all merged robots [0, 2]:  4.010 m   (810 samples each)
+    r0 solo  0.777 m  -> merge cost +3.233 m
+    r2 solo  3.738 m  -> merge cost +0.271 m
+
+--- inter-robot baseline error (alignment-free) ---
+  r0-r1: mean +1.033 m  absmax  2.836 m  (810 samples)
+  r0-r2: mean +3.464 m  absmax  6.345 m  (810 samples)
+  r1-r2: mean +3.364 m  absmax  6.223 m  (810 samples)

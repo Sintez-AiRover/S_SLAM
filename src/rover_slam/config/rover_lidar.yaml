@@ -1,0 +1,100 @@
+# cslam configuration for the AiRover Ignition simulation (rover_description).
+#
+# Based on cslam_experiments/config/graco_lidar.yaml (the upstream lidar
+# reference), adapted for the sim:
+#   - use_sim_time: Ignition drives /clock (mandatory, S3E lesson).
+#   - pointcloud_topic/odom_topic are RELATIVE to the /rover_N namespace the
+#     cslam nodes are launched into, so no relays/remaps are needed:
+#     /rover_0/lidar/points comes straight from the ros_gz bridge,
+#     /rover_0/odom_icp from rtabmap icp_odometry (rover_slam launch) --
+#     NOT the sim's wheel odom (/rover_N/odom), per user choice of
+#     realistic drifting odometry.
+#   - loop-closure budget/threshold values carried over from the S3E tuning
+#     campaign (runs 7-11, settled 2026-07-13).
+/**:
+  ros__parameters:
+    use_sim_time: true
+    frontend:
+      odom_topic: "odom_icp"
+      sensor_type: "lidar"
+      pointcloud_topic: "lidar/points"
+      # 16-beam 5 Hz sim lidar (~5.7k pts/scan) is far sparser than the
+      # datasets graco_lidar.yaml was tuned on -> smaller voxels.
+      voxel_size: 0.3
+      # ICP verification gate for loop-closure candidates. History (all
+      # 2026-07-23, same 3-rover teleop session):
+      #   60 -> only 3 inter-robot LCs ever verified; rover_1 raised many
+      #         candidates, won none, could never merge.
+      #   35 -> picked from a 157-sample failure histogram that showed an
+      #         empty band at 27-41. THAT BAND WAS SMALL-SAMPLE LUCK: at 226
+      #         samples the failure distribution is CONTINUOUS from 7 to 35
+      #         (34 attempts landed in 27-34). Inlier count does NOT separate
+      #         true from false matches in the periodic crop field. Result:
+      #         LCs rose 15 -> 70 while inter-robot baseline error vs Ignition
+      #         ground truth went 0.6-1.4 m -> 2.2-3.2 m, and a PARKED rover_1
+      #         (identical GT both samples) was warped 6.0 m by false edges.
+      #   45 -> current. Above the entire observed false-match range (max 35),
+      #         and the perimeter landmarks added to crop_field.sdf the same
+      #         day give true matches far more structure to score inliers on.
+      # If rover_1 again fails to merge, the honest read is that the drive
+      # pattern lacked genuine overlap -- do NOT lower this back below 40
+      # without re-measuring the failure histogram first.
+      registration_min_inliers: 45
+      inter_robot_loop_closure_budget: 4
+      inter_robot_detection_period_sec: 5
+      enable_sparsification: true
+      max_queue_size: 10
+      similarity_threshold: 0.7
+      global_descriptors_topic: "global_descriptors"
+      # 2026-07-23: was 20, carried over from the S3E tuning campaign. In a
+      # 10 x 6 m crop field the robots only ever built 12-26 keyframes each,
+      # so a required gap of 20 made intra-robot loop closure STRUCTURALLY
+      # IMPOSSIBLE -- measured exactly 0 intra-robot LCs in a full run, i.e.
+      # each rover's own trajectory carried raw ICP drift with no correction,
+      # and the merge then stacked three drifted trajectories together.
+      # 10 keyframes at the new 0.3 m spacing is ~3 m of travel, a genuine
+      # revisit at this field scale. NOTE: S3E found 10 catastrophic, but
+      # that was km-scale trajectories with thousands of keyframes where
+      # "10 apart" meant merely-similar, not revisited -- different regime.
+      # This is the most experimental of today's changes; revert to 20 first
+      # if intra-robot false closures appear.
+      intra_loop_min_inbetween_keyframes: 10
+      detection_publication_period_sec: 0.5
+      detection_publication_max_elems_per_msg: 100
+      enable_intra_robot_loop_closures: true
+      # 2026-07-23: 0.5 -> 0.3 m per keyframe. At 0.5 m a full teleop run
+      # produced only 12-26 keyframes per robot (53 total across the fleet),
+      # far too few constraints for PGO to average out a bad edge -- one
+      # mediocre transform visibly moved the whole map. 0.3 m raises graph
+      # density ~1.7x, gives the map more cloud coverage, and gets each robot
+      # past intra_loop_min_inbetween_keyframes early enough for intra-robot
+      # loop closures to actually fire.
+      keyframe_generation_ratio_distance: 0.3
+      pointcloud_odom_approx_time_sync_s: 0.1
+      use_vertex_cover_selection: true
+      map_manager_process_period_ms: 100
+      global_descriptor_technique: "scancontext"
+    neighbor_management:
+      enable_neighbor_monitoring: true
+      max_heartbeat_delay_sec: 5.0
+      init_delay_sec: 5.0
+      heartbeat_period_sec: 1.0
+    backend:
+      pose_graph_optimization_start_period_ms: 10000
+      pose_graph_optimization_loop_period_ms: 100
+      # 3600 upstream; 120 proved better on S3E (late bad edges get
+      # out-voted while data is still arriving).
+      max_waiting_time_sec: 120
+      enable_broadcast_tf_frames: true
+    evaluation:
+      enable_logs: false
+      # Keep false: upstream null-logger segfault when enable_logs is false
+      # (guarded in our cslam build, but belt and suspenders).
+      enable_pose_timestamps_recording: false
+      log_folder: "results"
+      enable_gps_recording: false
+      gps_topic: "gps/fix"
+      enable_sparsification_comparison: false
+    visualization:
+      enable: true
+      publishing_period_ms: 1000

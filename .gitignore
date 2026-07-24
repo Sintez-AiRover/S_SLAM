@@ -1,0 +1,36 @@
+# --- colcon build artifacts -------------------------------------------------
+build/
+install/
+log/
+
+# --- datasets and model weights ---------------------------------------------
+# The S3E bags alone are ~6.3 GB in src/ and ~36 GB once installed. GitHub
+# rejects any single file over 100 MB, so these must never be committed.
+# Fetch them with cslam_experiments/data/download.sh instead.
+**/data/S3E_*/
+*.db3
+*.db3-shm
+*.db3-wal
+*.pth
+
+# --- upstream cslam clones ---------------------------------------------------
+# These are separate git repositories (clones of github.com/lajoiepy/*).
+# Committing them into this repo would embed broken sub-repos. Either fork
+# them under your own org and add them as submodules, or vendor them by
+# deleting their .git directories first. See README.
+src/cslam/
+src/cslam_experiments/
+src/cslam_interfaces/
+src/cslam_visualization/
+src/Swarm-SLAM/
+
+# --- editor state ------------------------------------------------------------
+.vscode/
+.idea/
+
+# --- run outputs -------------------------------------------------------------
+saved_maps/
+drive_gt_log.csv
+*.gv
+__pycache__/
+*.pyc
